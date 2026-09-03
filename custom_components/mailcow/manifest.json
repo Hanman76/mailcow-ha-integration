@@ -1,0 +1,12 @@
+{
+  "domain": "mailcow",
+  "name": "Mailcow",
+  "codeowners": [
+    "@Hanman76"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/Hanman76/mailcow-ha-integration",
+  "iot_class": "cloud_polling",
+  "requirements": [],
+  "version": "0.1.0"
+}

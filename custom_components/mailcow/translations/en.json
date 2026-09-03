@@ -1,0 +1,71 @@
+{
+  "title": "Mailcow",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Mailcow",
+        "description": "Enter your Mailcow address and API key. HTTPS is pre-filled for convenience. The integration will first test the normal connection.",
+        "data": {
+          "url": "Mailcow address",
+          "api_key": "API key"
+        },
+        "data_description": {
+          "url": "Enter your Mailcow hostname after https://, for example mail.example.com.",
+          "api_key": "Mailcow API key with permission to read status and quarantine data."
+        }
+      },
+      "proxy": {
+        "title": "Mailcow connection failed",
+        "description": "Home Assistant could not connect to the Mailcow API at {url}. If the server is behind Cloudflare, a CDN, or another proxy, Home Assistant can connect directly to the Mailcow server instead.",
+        "menu_options": {
+          "origin": "Yes \u2014 configure Cloudflare or proxy connection",
+          "connection_failed": "No \u2014 check the connection settings"
+        },
+        "menu_option_descriptions": {
+          "origin": "Enter the public IP address of the Mailcow server while keeping the Mailcow hostname for secure HTTPS.",
+          "connection_failed": "Show possible causes such as the URL, API key, or Mailcow API access settings."
+        }
+      },
+      "origin": {
+        "title": "Connection through Cloudflare or another proxy",
+        "description": "Enter the public IP address of the Mailcow server below. Home Assistant will connect directly to that server while still using your Mailcow hostname for the secure HTTPS connection.",
+        "data": {
+          "origin_ip": "Mailcow server IP address"
+        },
+        "data_description": {
+          "origin_ip": "Enter only the public IPv4 or IPv6 address of the Mailcow server, for example 203.0.113.10."
+        }
+      },
+      "connection_failed": {
+        "title": "Could not connect to Mailcow",
+        "description": "Home Assistant could not authenticate or connect to the Mailcow API. Check the Mailcow address, API key, and Mailcow API access settings, then submit this screen to try again."
+      }
+    },
+    "error": {
+      "invalid_url": "Enter a valid HTTP or HTTPS address.",
+      "invalid_auth": "The Mailcow server rejected the API key.",
+      "invalid_ip": "Enter a valid IPv4 or IPv6 address.",
+      "cannot_connect_origin": "Could not authenticate or connect directly to the Mailcow server. Check the server IP, API key, and Mailcow API access settings.",
+      "connection_or_auth_failed": "Could not authenticate or connect to the Mailcow API."
+    },
+    "abort": {
+      "already_configured": "This Mailcow server is already configured.",
+      "missing_connection_data": "The initial Mailcow connection information was lost. Start setup again."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "api_connection": {
+        "name": "API connection"
+      }
+    },
+    "sensor": {
+      "quarantine_count": {
+        "name": "Quarantine count"
+      },
+      "certificate": {
+        "name": "Certificate"
+      }
+    }
+  }
+}

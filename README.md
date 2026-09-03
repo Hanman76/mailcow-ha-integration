@@ -1,103 +1,98 @@
-# Mailcow for Home Assistant
+# Mailcow Home Assistant Integration
 
-A custom Home Assistant integration for monitoring and managing a Mailcow server.
+A custom Home Assistant integration for monitoring Mailcow servers.
 
-The goal of this project is to provide native Mailcow functionality in Home Assistant without relying on shell commands, REST sensors, or external scripts.
+> **Status:** Early development. Version 0.1.0 is the first tested foundation.
 
-> [!IMPORTANT]
-> This integration is currently in early development. Version 0.1.0 provides the initial monitoring functionality. More Mailcow management features are planned.
+## Features in v0.1.0
 
-## Features
+- UI-based setup through Home Assistant
+- Mailcow URL and API key configuration
+- HTTPS pre-filled during setup
+- Normal API connection tested first
+- Guided fallback for Mailcow installations behind Cloudflare, a CDN, or another proxy
+- Optional direct Mailcow server IP while preserving the hostname for HTTPS/TLS
+- API connectivity binary sensor
+- Quarantine count sensor
+- TLS certificate days-remaining sensor
+- TLS certificate metadata including issuer, subject, valid-from, and expiry
+- Central asynchronous API client and Home Assistant `DataUpdateCoordinator`
+- Local Home Assistant brand icon/logo
+- Clean Home Assistant device metadata (`Mailcow Server` by `mailcow`)
 
-### Available in v0.1.0
+## Planned
 
-- Mailcow API connection monitoring
-- Quarantine message count
-- TLS certificate expiry monitoring
-- Certificate information including issuer and validity dates
-- Configuration through the Home Assistant UI
-- Support for Mailcow servers behind Cloudflare, CDNs, and reverse proxies
-- Direct server connection while preserving the Mailcow hostname for TLS validation
-- Automatic coordinator-based polling
+Future versions are intended to add richer quarantine management, release/delete actions,
+mail queue functionality, and configurable auto-delete rules.
 
-## Planned features
-
-Future versions are planned to include:
-
-- Recent quarantine messages
-- Release quarantined messages
-- Delete quarantined messages
-- Mail queue monitoring
-- Auto-delete rules
-- Create, edit, enable and disable rules
-- Additional Mailcow health and status sensors
-
-## Installation
-
-### Manual installation
+## Installation for testing
 
 Copy:
 
+```text
 custom_components/mailcow/
+```
 
 to:
 
+```text
 /config/custom_components/mailcow/
+```
 
-Restart Home Assistant.
+Restart Home Assistant, then go to:
 
-Then go to:
-
-Settings → Devices & services → Add integration → Mailcow
+**Settings → Devices & services → Add integration → Mailcow**
 
 Enter your Mailcow hostname and API key.
 
-### HACS
+If the normal API connection fails, the setup flow asks whether the Mailcow server is
+behind Cloudflare, a CDN, or another proxy. If so, enter the public IP address of the
+Mailcow server. The integration connects to that IP while retaining the configured
+Mailcow hostname for HTTPS certificate validation and TLS SNI.
 
-HACS installation is planned but is not yet officially supported.
+## API endpoints used in v0.1.0
 
-## Cloudflare / reverse proxy support
+Connection test:
 
-The integration first attempts to connect using the normal Mailcow URL.
+```text
+GET /api/v1/get/status/containers
+```
 
-If the connection fails, the setup process can configure a direct connection to the Mailcow server. This is useful when Cloudflare, a CDN, or another reverse proxy prevents Home Assistant from accessing the Mailcow API.
+Quarantine:
 
-When using this mode, the integration connects directly to the server IP while retaining the Mailcow hostname for HTTPS/TLS validation.
-
-## Entities
-
-Version 0.1.0 currently creates:
-
-- API connection
-- Quarantine count
-- Certificate
-
-## Requirements
-
-- Home Assistant
-- A working Mailcow installation
-- Mailcow API access
-- A Mailcow API key
+```text
+GET /api/v1/get/quarantine/all
+```
 
 ## Security
 
-Your Mailcow API key is entered through the Home Assistant configuration flow and is not stored in the integration source code.
+Never commit your Mailcow API key, server credentials, or other secrets to this repository.
 
-Never commit API keys, passwords, server credentials, or other secrets to this repository.
+Configuration values entered through Home Assistant are stored in the Home Assistant
+config entry and are not hard-coded in the integration.
 
-## Development status
+## Repository structure
 
-This project is under active development.
-
-The initial v0.1.0 release focuses on establishing a reliable connection between Home Assistant and Mailcow, including installations using Cloudflare or another reverse proxy.
-
-Quarantine management is planned as the next major feature.
-
-## Contributing
-
-Issues, bug reports, feature requests, and pull requests are welcome.
-
-If you encounter a problem, please include your Home Assistant version, Mailcow version, and relevant Home Assistant log messages. Do not include API keys or other credentials.
+```text
+custom_components/
+└── mailcow/
+    ├── __init__.py
+    ├── api.py
+    ├── binary_sensor.py
+    ├── config_flow.py
+    ├── const.py
+    ├── coordinator.py
+    ├── entity.py
+    ├── manifest.json
+    ├── sensor.py
+    ├── brand/
+    │   ├── icon.png
+    │   ├── icon@2x.png
+    │   ├── logo.png
+    │   └── logo@2x.png
+    └── translations/
+        └── en.json
+```
 
 ## License
 
