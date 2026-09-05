@@ -10,6 +10,15 @@ import ssl
 from typing import Any
 from urllib.parse import urlparse
 
+from .const import (
+    API_TEST_ENDPOINT,
+    CONTAINERS_ENDPOINT,
+    HOST_STATUS_ENDPOINT,
+    DELETE_QUARANTINE_ENDPOINT,
+    QUARANTINE_ENDPOINT,
+    RELEASE_QUARANTINE_ENDPOINT,
+)
+
 import aiohttp
 from aiohttp import ClientResponseError
 from aiohttp.abc import AbstractResolver, ResolveResult
@@ -174,11 +183,24 @@ class MailcowApi:
 
     async def async_test_connection(self) -> None:
         """Validate API connectivity and authentication."""
-        await self.async_request("get/status/containers")
+        await self.async_request(API_TEST_ENDPOINT)
+
+    async def async_get_containers(self) -> Any:
+        """Return Mailcow container status data."""
+        return await self.async_request(CONTAINERS_ENDPOINT)
+
+    async def async_get_host_status(self) -> dict[str, Any]:
+        """Return Mailcow host status data."""
+        data = await self.async_request(HOST_STATUS_ENDPOINT)
+        if not isinstance(data, dict):
+            raise MailcowInvalidResponseError(
+                "Host status endpoint returned an unexpected data type"
+            )
+        return data
 
     async def async_get_quarantine(self) -> list[dict[str, Any]]:
         """Return quarantine entries."""
-        data = await self.async_request("get/quarantine/all")
+        data = await self.async_request(QUARANTINE_ENDPOINT)
         if data is None:
             return []
         if not isinstance(data, list):
@@ -186,6 +208,62 @@ class MailcowApi:
                 "Quarantine endpoint returned an unexpected data type"
             )
         return data
+
+    async def async_get_quarantine_item_details(self, item_id: str) -> dict[str, Any]:
+        """Return full details for one quarantine item using Mailcow's AJAX handler."""
+        request_url = f"{self.url}/inc/ajax/qitem_details.php"
+        headers = {"X-API-Key": self.api_key, "Accept": "application/json"}
+        try:
+            async with asyncio.timeout(15):
+                async with self._session.get(
+                    request_url,
+                    headers=headers,
+                    params={"id": str(item_id)},
+                ) as response:
+                    if response.status == 401:
+                        raise MailcowAuthError("Mailcow rejected the API key")
+                    if response.status == 403:
+                        raise MailcowAccessBlockedError("Access was forbidden (HTTP 403)")
+                    if response.status >= 400:
+                        body = (await response.text())[:300]
+                        raise MailcowConnectionError(
+                            f"Mailcow returned HTTP {response.status}: {body}"
+                        )
+                    data = await response.json(content_type=None)
+                    if not isinstance(data, dict):
+                        raise MailcowInvalidResponseError(
+                            "Quarantine details endpoint returned unexpected data"
+                        )
+                    return data
+        except MailcowError:
+            raise
+        except (
+            TimeoutError,
+            asyncio.TimeoutError,
+            aiohttp.ClientConnectionError,
+            aiohttp.ClientConnectorError,
+            aiohttp.ClientSSLError,
+            aiohttp.ServerDisconnectedError,
+            ClientResponseError,
+            ValueError,
+        ) as err:
+            raise MailcowConnectionError(str(err)) from err
+
+    async def async_release_quarantine_item(self, item_id: str) -> Any:
+        """Release one quarantine item."""
+        return await self.async_request(
+            RELEASE_QUARANTINE_ENDPOINT,
+            method="POST",
+            payload={"items": [str(item_id)], "attr": {"action": "release"}},
+        )
+
+    async def async_delete_quarantine_item(self, item_id: str) -> Any:
+        """Permanently delete one quarantine item."""
+        return await self.async_request(
+            DELETE_QUARANTINE_ENDPOINT,
+            method="POST",
+            payload=[str(item_id)],
+        )
 
     async def async_get_certificate(self) -> dict[str, Any]:
         """Read the TLS certificate presented for the configured hostname."""

@@ -1,0 +1,32 @@
+view_quarantine_item:
+  name: View quarantine item
+  description: Fetch full details for a quarantined message, including body and Rspamd analysis.
+  fields:
+    item_id:
+      name: Item ID
+      description: Mailcow quarantine item ID.
+      required: true
+      selector:
+        text:
+
+release_quarantine_item:
+  name: Release quarantine item
+  description: Release a quarantined message for delivery.
+  fields:
+    item_id:
+      name: Item ID
+      description: Mailcow quarantine item ID.
+      required: true
+      selector:
+        text:
+
+delete_quarantine_item:
+  name: Delete quarantine item
+  description: Permanently delete a quarantined message.
+  fields:
+    item_id:
+      name: Item ID
+      description: Mailcow quarantine item ID.
+      required: true
+      selector:
+        text:

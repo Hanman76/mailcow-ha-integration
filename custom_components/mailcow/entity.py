@@ -2,24 +2,24 @@
 
 from __future__ import annotations
 
+from typing import Any
 from urllib.parse import urlparse
 
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers.update_coordinator import CoordinatorEntity, DataUpdateCoordinator
 
 from . import MailcowConfigEntry
 from .const import DOMAIN
-from .coordinator import MailcowCoordinator
 
 
-class MailcowEntity(CoordinatorEntity[MailcowCoordinator]):
+class MailcowEntity(CoordinatorEntity[DataUpdateCoordinator[Any]]):
     """Base Mailcow entity."""
 
     _attr_has_entity_name = True
 
     def __init__(
         self,
-        coordinator: MailcowCoordinator,
+        coordinator: DataUpdateCoordinator[Any],
         entry: MailcowConfigEntry,
     ) -> None:
         super().__init__(coordinator)

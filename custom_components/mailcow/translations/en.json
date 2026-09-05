@@ -57,6 +57,9 @@
     "binary_sensor": {
       "api_connection": {
         "name": "API connection"
+      },
+      "container_health": {
+        "name": "Container health"
       }
     },
     "sensor": {
@@ -65,6 +68,24 @@
       },
       "certificate": {
         "name": "Certificate"
+      },
+      "recent_quarantine": {
+        "name": "Recent quarantine"
+      },
+      "containers_running": {
+        "name": "Containers running"
+      },
+      "api_response_time": {
+        "name": "API response time"
+      },
+      "uptime": {
+        "name": "Uptime"
+      },
+      "cpu_load": {
+        "name": "CPU load"
+      },
+      "memory_usage": {
+        "name": "Memory usage"
       }
     }
   }
