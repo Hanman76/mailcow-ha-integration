@@ -2,7 +2,14 @@
 
 A custom Home Assistant integration for monitoring Mailcow servers.
 
-> **Status:** Early development. Version 0.1.0 is the first tested foundation.
+## 🚧 Development Status
+
+> **Please do not install this integration yet.**
+>
+> Version 0.1.0 is the first tested development foundation and is not intended for general use.
+> The integration is under active development, with significant new functionality planned for version 0.2.0.
+>
+> ⭐ **Keep an eye on this repository for updates.**
 
 ## Features in v0.1.0
 
@@ -26,6 +33,10 @@ Future versions are intended to add richer quarantine management, release/delete
 mail queue functionality, and configurable auto-delete rules.
 
 ## Installation for testing
+
+> **Development/testing only.**
+>
+> Installation is not currently recommended for general use.
 
 Copy:
 
@@ -93,6 +104,12 @@ custom_components/
     └── translations/
         └── en.json
 ```
+
+## ☕ Support
+
+If you find this project useful and would like to support its development, you can buy me a coffee.
+
+[![Buy Me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/hanman76)
 
 ## License
 
