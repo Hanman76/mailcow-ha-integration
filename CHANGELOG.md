@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.2.1 - 2026-09-06
+
+### Changed
+- Replaced the integration branding with the official Mailcow logo.
+
 ## 0.2.0 - 2026-09-05
 
 ### Added
